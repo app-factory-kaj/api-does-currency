@@ -1,0 +1,62 @@
+openapi: 3.0.3
+info:
+  title: ExchangeRate-API (v6 Standard)
+  description: Authenticated Standard endpoint returning latest exchange rates from a base currency to all supported currencies.
+  version: "6"
+servers:
+  - url: https://v6.exchangerate-api.com/v6
+paths:
+  /{apiKey}/latest/{baseCode}:
+    get:
+      operationId: getLatestRates
+      summary: Get latest exchange rates for a base currency
+      parameters:
+        - name: apiKey
+          in: path
+          required: true
+          description: API key issued from the ExchangeRate-API dashboard
+          schema: { type: string }
+        - name: baseCode
+          in: path
+          required: true
+          description: ISO 4217 base currency code, e.g. USD
+          schema: { type: string }
+      responses:
+        '200':
+          description: latest exchange rates from the base currency to all supported currencies
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [result, base_code, conversion_rates, time_last_update_utc]
+                properties:
+                  result: { type: string, description: "success or error" }
+                  documentation: { type: string }
+                  terms_of_use: { type: string }
+                  time_last_update_unix: { type: integer }
+                  time_last_update_utc: { type: string }
+                  time_next_update_unix: { type: integer }
+                  time_next_update_utc: { type: string }
+                  base_code: { type: string, description: the requested base currency code }
+                  conversion_rates:
+                    type: object
+                    description: map of currency code to rate against the base currency
+                    additionalProperties: { type: number }
+        '403':
+          description: invalid or missing API key
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string }
+                  "error-type": { type: string }
+        '404':
+          description: unsupported or unknown base currency code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  result: { type: string }
+                  "error-type": { type: string }
