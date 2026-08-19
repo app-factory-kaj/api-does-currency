@@ -7,19 +7,37 @@
   "appPath": "currency-exchange-api",
   "entrypoint": "deployment/service",
   "exposure": "internet",
+  "description": "Public API that converts an amount in a given ISO 4217 source currency to USD using the current exchange rate. Validates a shared API key on every request, fetches the latest USD-based rates from the ExchangeRate-API provider, and returns clear errors for unsupported currencies or invalid amounts. Does not support batch conversion, historical rates, non-USD target currencies, or any web UI.",
   "dependencies": [
     {
       "kind": "external",
       "name": "exchange-rate-provider",
-      "style": "rest-api",
       "description": "ExchangeRate-API — fetches the latest USD-based conversion rates (GET /v6/{API_KEY}/latest/USD) and picks the requested source currency's rate to convert an amount to USD.",
+      "style": "rest-api",
       "specPath": "specs/design/components/currency-exchange-api/dependencies/exchange-rate-provider.openapi.yaml",
       "config": [
-        { "key": "EXCHANGE_RATE_API_KEY", "secret": true, "description": "API key for ExchangeRate-API, from https://app.exchangerate-api.com." },
-        { "key": "EXCHANGE_RATE_API_BASE_URL", "description": "Base URL of the ExchangeRate-API v6 endpoint used to fetch current rates.", "defaultValue": "https://v6.exchangerate-api.com/v6" }
-      ]
+        {
+          "key": "EXCHANGE_RATE_API_KEY",
+          "secret": true,
+          "description": "API key for ExchangeRate-API, from https://app.exchangerate-api.com."
+        },
+        {
+          "key": "EXCHANGE_RATE_API_BASE_URL",
+          "description": "Base URL of the ExchangeRate-API v6 endpoint used to fetch current rates.",
+          "defaultValue": "https://v6.exchangerate-api.com/v6"
+        }
+      ],
+      "wiring": {
+        "ref": "api-does-currency-ff7e0e80",
+        "envBindings": {
+          "EXCHANGE_RATE_API_BASE_URL": "EXCHANGE_RATE_API_BASE_URL",
+          "EXCHANGE_RATE_API_KEY": "EXCHANGE_RATE_API_KEY"
+        }
+      }
     }
   ],
-  "description": "Public API that converts an amount in a given ISO 4217 source currency to USD using the current exchange rate. Validates a shared API key on every request, fetches the latest USD-based rates from the ExchangeRate-API provider, and returns clear errors for unsupported currencies or invalid amounts. Does not support batch conversion, historical rates, non-USD target currencies, or any web UI.",
-  "skillsPinned": ["openapi-conventions", "ballerina"]
+  "skillsPinned": [
+    "openapi-conventions",
+    "ballerina"
+  ]
 }
