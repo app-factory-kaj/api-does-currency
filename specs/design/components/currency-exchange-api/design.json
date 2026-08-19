@@ -1,0 +1,23 @@
+{
+  "name": "currency-exchange-api",
+  "type": "service",
+  "version": "0.1.0",
+  "language": "Ballerina",
+  "buildpack": "docker",
+  "appPath": "currency-exchange-api",
+  "entrypoint": "deployment/service",
+  "exposure": "internet",
+  "dependencies": [
+    {
+      "kind": "external",
+      "name": "exchange-rate-provider",
+      "style": "rest-api",
+      "description": "ExchangeRate-API — fetches the latest USD-based conversion rates (GET /v6/{API_KEY}/latest/USD) and picks the requested source currency's rate to convert an amount to USD.",
+      "config": [
+        { "key": "EXCHANGE_RATE_API_KEY", "secret": true, "description": "API key for ExchangeRate-API, from https://app.exchangerate-api.com." }
+      ]
+    }
+  ],
+  "description": "Public API that converts an amount in a given ISO 4217 source currency to USD using the current exchange rate. Validates a shared API key on every request, fetches the latest USD-based rates from the ExchangeRate-API provider, and returns clear errors for unsupported currencies or invalid amounts. Does not support batch conversion, historical rates, non-USD target currencies, or any web UI.",
+  "skillsPinned": ["openapi-conventions", "ballerina"]
+}

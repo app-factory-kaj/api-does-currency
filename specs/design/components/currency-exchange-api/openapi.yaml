@@ -1,0 +1,103 @@
+openapi: 3.0.3
+info:
+  title: Currency Exchange API
+  description: Converts an amount in a given source currency to USD using the current exchange rate.
+  version: 0.1.0
+servers:
+  - url: /
+
+paths:
+  /conversions:
+    post:
+      operationId: createConversion
+      summary: Convert an amount from a source currency to USD
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConversionRequest'
+      responses:
+        '200':
+          description: Conversion computed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ConversionResult'
+        '400':
+          description: Unsupported currency code or invalid amount
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Missing or invalid API key
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      security:
+        - apiKeyAuth: []
+
+components:
+  securitySchemes:
+    apiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-Key
+  schemas:
+    ConversionRequest:
+      type: object
+      required: [sourceCurrency, amount]
+      properties:
+        sourceCurrency:
+          type: string
+          description: ISO 4217 currency code to convert from
+          example: EUR
+        amount:
+          type: number
+          format: double
+          description: amount in the source currency
+    ConversionResult:
+      type: object
+      required: [sourceCurrency, amount, rate, convertedAmount, targetCurrency, rateTimestamp]
+      properties:
+        sourceCurrency:
+          type: string
+          description: ISO 4217 currency code converted from
+        amount:
+          type: number
+          format: double
+          description: original amount in the source currency
+        rate:
+          type: number
+          format: double
+          description: exchange rate applied (source currency to USD)
+        convertedAmount:
+          type: number
+          format: double
+          description: resulting amount in USD
+        targetCurrency:
+          type: string
+          description: always USD
+          example: USD
+        rateTimestamp:
+          type: string
+          format: date-time
+          description: when the applied rate was last updated by the provider
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: integer
+          description: HTTP or application error code
+        message:
+          type: string
+          description: short human-readable label
+        description:
+          type: string
+          description: detailed explanation
+        moreInfo:
+          type: string
+          description: URI to documentation

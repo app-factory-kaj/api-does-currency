@@ -1,0 +1,11 @@
+title Currency Exchange API
+
+phase 1
+
+component currency-exchange-api as "Currency Exchange API" service [stories: 1, 2, 3]
+
+south exchange-rate-provider as "Exchange Rate Provider" service
+
+north -> currency-exchange-api
+
+currency-exchange-api -> exchange-rate-provider

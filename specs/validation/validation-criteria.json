@@ -1,0 +1,35 @@
+{
+  "requirements": [
+    {
+      "id": "REQ-001",
+      "statement": "An API Consumer can convert a given amount in a specified source currency to USD using the current exchange rate",
+      "stories": [1],
+      "criteria": [
+        { "id": "AC-001-a", "must": "A request with a valid supported source currency code and a positive amount returns a 200 response", "method": "e2e" },
+        { "id": "AC-001-b", "must": "The response includes the converted USD amount", "method": "e2e" },
+        { "id": "AC-001-c", "must": "The response includes the exchange rate applied", "method": "e2e" },
+        { "id": "AC-001-d", "must": "The converted amount reflects the current exchange rate, not a hard-coded value", "method": "manual" }
+      ]
+    },
+    {
+      "id": "REQ-002",
+      "statement": "API requests must be authenticated with an API key before the conversion is performed",
+      "stories": [2],
+      "criteria": [
+        { "id": "AC-002-a", "must": "A request without an API key is rejected with a 401 response", "method": "e2e" },
+        { "id": "AC-002-b", "must": "A request with an invalid API key is rejected with a 401 response", "method": "e2e" },
+        { "id": "AC-002-c", "must": "A request with the valid shared API key is accepted and processed", "method": "e2e" }
+      ]
+    },
+    {
+      "id": "REQ-003",
+      "statement": "The API returns a clear error response when the request specifies an unsupported currency code or an invalid amount",
+      "stories": [3],
+      "criteria": [
+        { "id": "AC-003-a", "must": "A request with an unsupported or unknown currency code returns a 400 response", "method": "e2e" },
+        { "id": "AC-003-b", "must": "A request with a negative or non-numeric amount returns a 400 response", "method": "e2e" },
+        { "id": "AC-003-c", "must": "An error response body includes a machine-readable code and a human-readable message", "method": "e2e" }
+      ]
+    }
+  ]
+}
