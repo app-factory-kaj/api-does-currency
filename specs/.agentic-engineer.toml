@@ -1,0 +1,4 @@
+apiVersion = "agentic-engineer/v1"
+name = "api-does-currency"
+createdAt = "2026-08-19T11:23:28Z"
+idea = "an api that does currency exchange to USD"
